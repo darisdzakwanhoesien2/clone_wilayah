@@ -68,3 +68,5 @@ Kemendagri (Data Kependudukan Semester I Bulan Juni Tahun 2022)
 
 - Data SQL : [https://github.com/cahyadsn/wilayah](https://github.com/cahyadsn/wilayah)
 - Dokumen : [https://github.com/cahyadsn/wilayah_ref](https://github.com/cahyadsn/wilayah_ref)
+
+# clone_wilayah
