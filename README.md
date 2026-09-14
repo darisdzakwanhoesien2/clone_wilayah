@@ -82,6 +82,8 @@ python3 scripts/generate_api.py
 
 Lihat [demo.html](demo.html) untuk contoh implementasi dropdown bertingkat (province &rarr; city &rarr; district &rarr; village) yang memanggil file-file JSON tersebut langsung dari browser.
 
+**Live:** [wilayah.darisdzakwanhoesien.site](https://wilayah.darisdzakwanhoesien.site/) (nginx di VPS, lihat `deploy/`) — fallback: [darisdzakwanhoesien2.github.io/clone_wilayah](https://darisdzakwanhoesien2.github.io/clone_wilayah/) (GitHub Pages).
+
 ## To Do
 ~~Validasi data desa (komparasi dengan data sumber)~~
 
