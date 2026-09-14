@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Demo Dropdown Wilayah Indonesia</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 420px; margin: 40px auto; padding: 0 16px; }
+  h1 { font-size: 18px; }
+  label { display: block; margin-top: 12px; font-size: 13px; color: #555; }
+  select { width: 100%; padding: 8px; font-size: 14px; margin-top: 4px; }
+  select:disabled { background: #f2f2f2; color: #999; }
+</style>
+</head>
+<body>
+  <h1>Demo: Dropdown Provinsi &rarr; Kota &rarr; Kecamatan &rarr; Desa</h1>
+  <p>Data dimuat langsung dari file JSON statis di <code>/api</code> (lihat <a href="scripts/generate_api.py">scripts/generate_api.py</a>).</p>
+
+  <label for="province">Provinsi</label>
+  <select id="province"><option value="">Pilih Provinsi</option></select>
+
+  <label for="regency">Kota/Kabupaten</label>
+  <select id="regency" disabled><option value="">Pilih Kota/Kabupaten</option></select>
+
+  <label for="district">Kecamatan</label>
+  <select id="district" disabled><option value="">Pilih Kecamatan</option></select>
+
+  <label for="village">Desa/Kelurahan</label>
+  <select id="village" disabled><option value="">Pilih Desa/Kelurahan</option></select>
+
+<script>
+async function loadOptions(select, url, placeholder) {
+  select.disabled = true;
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  const res = await fetch(url);
+  if (!res.ok) return;
+  const items = await res.json();
+  for (const item of items) {
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    opt.textContent = item.name;
+    select.appendChild(opt);
+  }
+  select.disabled = false;
+}
+
+const province = document.getElementById("province");
+const regency = document.getElementById("regency");
+const district = document.getElementById("district");
+const village = document.getElementById("village");
+
+function resetBelow(select, placeholder) {
+  select.disabled = true;
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+}
+
+province.addEventListener("change", () => {
+  resetBelow(regency, "Pilih Kota/Kabupaten");
+  resetBelow(district, "Pilih Kecamatan");
+  resetBelow(village, "Pilih Desa/Kelurahan");
+  if (province.value) loadOptions(regency, `api/regencies/${province.value}.json`, "Pilih Kota/Kabupaten");
+});
+
+regency.addEventListener("change", () => {
+  resetBelow(district, "Pilih Kecamatan");
+  resetBelow(village, "Pilih Desa/Kelurahan");
+  if (regency.value) loadOptions(district, `api/districts/${regency.value}.json`, "Pilih Kecamatan");
+});
+
+district.addEventListener("change", () => {
+  resetBelow(village, "Pilih Desa/Kelurahan");
+  if (district.value) loadOptions(village, `api/villages/${district.value}.json`, "Pilih Desa/Kelurahan");
+});
+
+loadOptions(province, "api/provinces.json", "Pilih Provinsi");
+</script>
+</body>
+</html>

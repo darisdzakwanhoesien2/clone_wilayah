@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wilayah Indonesia API Docs</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 780px; margin: 0 auto; padding: 32px 20px 80px; line-height: 1.55; }
+  h1 { font-size: 26px; margin-bottom: 4px; }
+  .sub { color: #666; margin-top: 0; }
+  h2 { margin-top: 40px; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  code { background: rgba(127,127,127,.15); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  pre { background: rgba(127,127,127,.1); padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(127,127,127,.25); vertical-align: top; }
+  th { color: #666; font-weight: 600; }
+  .badge { display: inline-block; background: #2ea043; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin-right: 8px; }
+  a { color: #2f81f7; }
+  footer { margin-top: 60px; color: #888; font-size: 13px; }
+</style>
+</head>
+<body>
+  <h1>Wilayah Indonesia API</h1>
+  <p class="sub">API statis (JSON) untuk data Provinsi, Kota/Kabupaten, Kecamatan, dan Desa/Kelurahan di Indonesia berdasarkan Keputusan Mendagri No 100.1.1-6117 Tahun 2022.</p>
+
+  <p>
+    Base URL: <code>https://wilayah.darisdzakwanhoesien.site</code><br>
+    Sumber data &amp; kode generator: <a href="https://github.com/darisdzakwanhoesien2/clone_wilayah">github.com/darisdzakwanhoesien2/clone_wilayah</a><br>
+    Contoh dropdown bertingkat: <a href="../../demo.html">/demo.html</a>
+  </p>
+
+  <h2><span class="badge">GET</span><code>/api/provinces.json</code></h2>
+  <p>Daftar seluruh provinsi.</p>
+  <pre>curl https://wilayah.darisdzakwanhoesien.site/api/provinces.json</pre>
+  <pre>[
+  { "id": "11", "name": "ACEH" },
+  { "id": "12", "name": "SUMATERA UTARA" },
+  ...
+]</pre>
+
+  <h2><span class="badge">GET</span><code>/api/regencies/{province_id}.json</code></h2>
+  <p>Daftar kota/kabupaten dalam satu provinsi.</p>
+  <pre>curl https://wilayah.darisdzakwanhoesien.site/api/regencies/11.json</pre>
+  <pre>[
+  { "id": "1101", "name": "KAB. ACEH SELATAN" },
+  { "id": "1102", "name": "KAB. ACEH TENGGARA" },
+  ...
+]</pre>
+
+  <h2><span class="badge">GET</span><code>/api/districts/{regency_id}.json</code></h2>
+  <p>Daftar kecamatan dalam satu kota/kabupaten.</p>
+  <pre>curl https://wilayah.darisdzakwanhoesien.site/api/districts/1101.json</pre>
+
+  <h2><span class="badge">GET</span><code>/api/villages/{district_id}.json</code></h2>
+  <p>Daftar desa/kelurahan dalam satu kecamatan.</p>
+  <pre>curl https://wilayah.darisdzakwanhoesien.site/api/villages/110101.json</pre>
+
+  <h2>Skema ID</h2>
+  <table>
+    <tr><th>Level</th><th>Panjang ID</th><th>Contoh</th></tr>
+    <tr><td>Provinsi</td><td>2 digit</td><td><code>11</code></td></tr>
+    <tr><td>Kota/Kabupaten</td><td>4 digit (diawali kode provinsi)</td><td><code>1101</code></td></tr>
+    <tr><td>Kecamatan</td><td>6 digit (diawali kode kota/kabupaten)</td><td><code>110101</code></td></tr>
+    <tr><td>Desa/Kelurahan</td><td>10 digit (diawali kode kecamatan)</td><td><code>1101012001</code></td></tr>
+  </table>
+
+  <h2>Contoh: dropdown bertingkat (JavaScript)</h2>
+  <pre>const res = await fetch(`/api/regencies/${provinceId}.json`);
+const regencies = await res.json();
+// regencies: [{ id, name }, ...] &rarr; isi ke &lt;select&gt;</pre>
+
+  <h2>Catatan</h2>
+  <p>File-file ini statis (tidak ada rate limit, tidak butuh API key) dan di-generate dari <code>csv/*.csv</code> lewat <a href="https://github.com/darisdzakwanhoesien2/clone_wilayah/blob/main/scripts/generate_api.py">scripts/generate_api.py</a>. Untuk data mentah lengkap (termasuk hierarki penuh per baris) lihat folder <a href="https://github.com/darisdzakwanhoesien2/clone_wilayah/tree/main/csv">csv/</a> atau dump SQL di root repo.</p>
+
+  <footer>Data BELUM/TIDAK termasuk perubahan pembentukan provinsi baru (Papua Barat Daya). Lihat README repo untuk detail.</footer>
+</body>
+</html>

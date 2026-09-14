@@ -61,6 +61,27 @@ Kemendagri (Data Kependudukan Semester I Bulan Juni Tahun 2022)
 - Jumlah pulau termasuk 6 pulau besar (Sumatera, Jawa, Kalimantan, Sulawesi, Timor, dan Papua)
 
 
+## API (Static JSON)
+
+Untuk kebutuhan dropdown bertingkat (provinsi &rarr; kota/kabupaten &rarr; kecamatan &rarr; desa/kelurahan), tersedia API statis berupa file JSON hasil generate dari `csv/`:
+
+```
+api/provinces.json               # semua provinsi
+api/regencies/<province_id>.json # kota/kabupaten dalam satu provinsi
+api/districts/<regency_id>.json  # kecamatan dalam satu kota/kabupaten
+api/villages/<district_id>.json  # desa/kelurahan dalam satu kecamatan
+```
+
+Setiap file berisi array `[{ "id": "...", "name": "..." }]`. Karena berupa file statis, cukup di-host di GitHub Pages/CDN mana pun — tidak perlu server/database.
+
+Generate ulang setelah `csv/` berubah:
+
+```bash
+python3 scripts/generate_api.py
+```
+
+Lihat [demo.html](demo.html) untuk contoh implementasi dropdown bertingkat (province &rarr; city &rarr; district &rarr; village) yang memanggil file-file JSON tersebut langsung dari browser.
+
 ## To Do
 ~~Validasi data desa (komparasi dengan data sumber)~~
 
