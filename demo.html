@@ -7,8 +7,8 @@
   body { font-family: system-ui, sans-serif; max-width: 420px; margin: 40px auto; padding: 0 16px; }
   h1 { font-size: 18px; }
   label { display: block; margin-top: 12px; font-size: 13px; color: #555; }
-  select { width: 100%; padding: 8px; font-size: 14px; margin-top: 4px; }
-  select:disabled { background: #f2f2f2; color: #999; }
+  select, input { width: 100%; padding: 8px; font-size: 14px; margin-top: 4px; box-sizing: border-box; font-family: inherit; }
+  select:disabled, input:read-only { background: #f2f2f2; color: #999; }
 </style>
 </head>
 <body>
@@ -27,12 +27,17 @@
   <label for="village">Desa/Kelurahan</label>
   <select id="village" disabled><option value="">Pilih Desa/Kelurahan</option></select>
 
+  <label for="postal_code">Kode Pos</label>
+  <input id="postal_code" type="text" readonly placeholder="Otomatis dari Desa/Kelurahan">
+
 <script>
+let villageData = [];
+
 async function loadOptions(select, url, placeholder) {
   select.disabled = true;
   select.innerHTML = `<option value="">${placeholder}</option>`;
   const res = await fetch(url);
-  if (!res.ok) return;
+  if (!res.ok) return [];
   const items = await res.json();
   for (const item of items) {
     const opt = document.createElement("option");
@@ -41,12 +46,14 @@ async function loadOptions(select, url, placeholder) {
     select.appendChild(opt);
   }
   select.disabled = false;
+  return items;
 }
 
 const province = document.getElementById("province");
 const regency = document.getElementById("regency");
 const district = document.getElementById("district");
 const village = document.getElementById("village");
+const postalCode = document.getElementById("postal_code");
 
 function resetBelow(select, placeholder) {
   select.disabled = true;
@@ -57,18 +64,30 @@ province.addEventListener("change", () => {
   resetBelow(regency, "Pilih Kota/Kabupaten");
   resetBelow(district, "Pilih Kecamatan");
   resetBelow(village, "Pilih Desa/Kelurahan");
+  postalCode.value = "";
   if (province.value) loadOptions(regency, `api/regencies/${province.value}.json`, "Pilih Kota/Kabupaten");
 });
 
 regency.addEventListener("change", () => {
   resetBelow(district, "Pilih Kecamatan");
   resetBelow(village, "Pilih Desa/Kelurahan");
+  postalCode.value = "";
   if (regency.value) loadOptions(district, `api/districts/${regency.value}.json`, "Pilih Kecamatan");
 });
 
 district.addEventListener("change", () => {
   resetBelow(village, "Pilih Desa/Kelurahan");
-  if (district.value) loadOptions(village, `api/villages/${district.value}.json`, "Pilih Desa/Kelurahan");
+  postalCode.value = "";
+  villageData = [];
+  if (district.value) {
+    loadOptions(village, `api/villages/${district.value}.json`, "Pilih Desa/Kelurahan")
+      .then(items => { villageData = items; });
+  }
+});
+
+village.addEventListener("change", () => {
+  const selected = villageData.find(v => v.id === village.value);
+  postalCode.value = selected?.postal_code || "";
 });
 
 loadOptions(province, "api/provinces.json", "Pilih Provinsi");

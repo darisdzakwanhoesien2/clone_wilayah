@@ -69,10 +69,10 @@ Untuk kebutuhan dropdown bertingkat (provinsi &rarr; kota/kabupaten &rarr; kecam
 api/provinces.json               # semua provinsi
 api/regencies/<province_id>.json # kota/kabupaten dalam satu provinsi
 api/districts/<regency_id>.json  # kecamatan dalam satu kota/kabupaten
-api/villages/<district_id>.json  # desa/kelurahan dalam satu kecamatan
+api/villages/<district_id>.json  # desa/kelurahan dalam satu kecamatan, termasuk kode pos
 ```
 
-Setiap file berisi array `[{ "id": "...", "name": "..." }]`. Karena berupa file statis, cukup di-host di GitHub Pages/CDN mana pun — tidak perlu server/database.
+Setiap file berisi array `[{ "id": "...", "name": "..." }]`; entri `villages` juga menyertakan `postal_code` (5 digit, atau `null` jika belum termapping — ~99.2% desa/kelurahan sudah punya kode pos, lihat `csv/postal_codes.csv`). Karena berupa file statis, cukup di-host di GitHub Pages/CDN mana pun — tidak perlu server/database.
 
 Generate ulang setelah `csv/` berubah:
 
@@ -91,5 +91,6 @@ Lihat [demo.html](demo.html) untuk contoh implementasi dropdown bertingkat (prov
 
 - Data SQL : [https://github.com/cahyadsn/wilayah](https://github.com/cahyadsn/wilayah)
 - Dokumen : [https://github.com/cahyadsn/wilayah_ref](https://github.com/cahyadsn/wilayah_ref)
+- Data Kode Pos : [https://github.com/cahyadsn/wilayah_kodepos](https://github.com/cahyadsn/wilayah_kodepos)
 
 # clone_wilayah
